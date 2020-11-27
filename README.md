@@ -61,4 +61,4 @@ That's it!
 
 ## 3. Wait, what just happened
 
-Well, i told you that was simple. If you wanna know more, read the [full explained documentation](https://github.com/thshiro/laravel-docker-template/assets/docs).
+Well, i told you that was simple. If you wanna know more, read the [full explained documentation](https://github.com/thshiro/laravel-docker-template/tree/master/assets/docs).
