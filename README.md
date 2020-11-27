@@ -1,6 +1,6 @@
 # Laravel Docker Template
 
-A simple template environment instsaller for Laravel.
+A simple docker environment installer for Laravel.
 
 ## 1. What's included
 
