@@ -1,0 +1,24 @@
+#!/bin/sh
+
+publish_folder=$(pwd)/publish
+src_folder=$(pwd)/../src
+
+# copy utils and example files
+cp -r $publish_folder/utils $src_folder/utils
+cp $publish_folder/examples/.env.example $src_folder/.env
+cp $publish_folder/examples/phpunit.example.xml $src_folder
+cp $publish_folder/examples/phpunit-generate-coverage.example.sh $src_folder/phpunit-generate-coverage.sh
+cp $publish_folder/examples/Documentation.php $src_folder/app/Http/Controllers/
+
+cd $src_folder
+
+# generate laravel key
+php artisan key:generate
+
+# require swagger and redis
+composer require zircote/swagger-php predis/predis
+
+printf "Done! Build something amazing! ;) \n"
+
+
+

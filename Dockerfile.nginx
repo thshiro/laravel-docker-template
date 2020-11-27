@@ -1,0 +1,8 @@
+#ARG APP_IMG
+FROM nginx:stable-alpine
+#FROM ${APP_IMG} as app
+
+COPY ./ /var/www/
+COPY ./.docker/nginx/conf.d/ /etc/nginx/conf.d/
+RUN cd /var/www/src/public/ && touch openapi.yaml
+#COPY --from=app /var/www/src/public/doc/v1/openapi.yaml /var/www/src/public/doc/v1/openapi.yaml

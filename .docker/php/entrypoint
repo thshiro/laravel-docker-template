@@ -1,0 +1,32 @@
+#!/bin/sh
+printenv > /etc/environment 
+
+#executing laravel migration
+echo "$(date +[%d-%b-%Y\ %H:%M:%S]) \033[0;32m Executing Laravel Migration"
+cd /var/www/src
+
+php artisan migrate --force
+
+echo "$(date +[%d-%b-%Y\ %H:%M:%S]) \033[0;32m Laravel Optimization"
+php artisan optimize:clear
+php artisan event:cache
+
+#starting cron
+echo "$(date +[%d-%b-%Y\ %H:%M:%S]) \033[0;32m Starting Cron"
+cron
+
+#starting supervisor
+echo "$(date +[%d-%b-%Y\ %H:%M:%S]) \033[0;32m Starting Supervisor"
+/usr/bin/supervisord -c /etc/supervisor/conf.d/laravel-worker.conf
+
+echo "$(date +[%d-%b-%Y\ %H:%M:%S]) \033[0;32m Executing Swagger"
+cd ./utils/swagger
+./swagger-doc.sh
+
+#add aliases to bash
+echo "$(date +[%d-%b-%Y\ %H:%M:%S]) \033[0;32m Add Bash Aliases"
+cat /var/www/.docker/php/aliases >> ~/.bashrc
+. ~/.bashrc
+
+chmod 777 /proc/self/fd/*
+su www -c /usr/local/sbin/php-fpm

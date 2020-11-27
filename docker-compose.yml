@@ -1,0 +1,78 @@
+version: '3.8'
+services:
+
+  # PHP Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.local
+    image: laravel-docker-template:latest
+    container_name: laravel-docker-template-app
+    restart: unless-stopped
+    tty: true
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./.docker/php/php.ini:/usr/local/etc/php/confi.d/local.ini
+    networks:
+      - laravel-docker-template-network
+    depends_on: 
+      - mariadb
+      - redisdb
+
+  # Nginx Service
+  webserver:
+    image: nginx:stable-alpine
+    container_name: laravel-docker-template-webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./:/var/www
+      - ./.docker/nginx/conf.d_local:/etc/nginx/conf.d
+    networks:
+      - laravel-docker-template-network
+    depends_on: 
+      - app
+
+  # MariaDB Service
+  mariadb:
+      container_name: laravel-docker-template-mariadb
+      image: bitnami/mariadb:latest
+      restart: unless-stopped
+      expose:
+        - 3306
+      ports:
+        - "3306:3306"
+      volumes:
+        - ./.docker/mariadb/data/application/init.sql:/docker-entrypoint-initdb.d/init.sql
+        - ./.docker/mariadb/data:/var/lib/mysql
+      environment:
+        - MYSQL_DATABASE=default
+        - MYSQL_USER=root
+        - MYSQL_PASSWORD=root
+        - MARIADB_ROOT_PASSWORD=root
+      networks:
+        - laravel-docker-template-network
+
+  # Redis Service
+  redisdb:
+      container_name: laravel-docker-template-redisdb
+      image: "redis:alpine"
+      command: redis-server --requirepass root
+      ports:
+          - 6379
+      volumes:
+        - ./.docker/redis/data:/var/lib/redis
+        - ./.docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      restart: unless-stopped
+      networks:
+        - laravel-docker-template-network
+
+#Docker Networks
+networks:
+  laravel-docker-template-network:
+    name: laravel-docker-template-network
+    driver: bridge

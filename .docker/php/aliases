@@ -1,0 +1,8 @@
+alias art='php artisan'
+alias p='./vendor/bin/phpunit'
+alias sdoc='utils/swagger/swagger-doc.sh'
+alias c='./phpunit-generate-coverage.sh'
+alias m='php artisan migrate'
+alias mf='php artisan migrate:fresh'
+alias mfs='php artisan migrate:fresh --seed'
+alias mfst='php artisan migrate:fresh --seed --env=testing'
